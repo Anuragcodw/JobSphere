@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block title %}Home · Local Job Portal{% endblock %}
+
+{% block content %}
+
+
+<div class="row align-items-center fade-up">
+
+    <div class="col-lg-7 mb-4 mb-lg-0">
+        <h1 class="page-title">
+            Find local jobs that match your skills.
+        </h1>
+        <p style="color:#94a3b8; max-width: 520px; font-size:0.98rem;">
+            Discover nearby opportunities from multiple platforms in one place.
+            Filter by role, location and type – all in a clean dark interface
+            designed for students, freshers and working professionals.
+        </p>
+
+        
+        <form class="mt-4" action="{{ url_for('jobs.search_jobs') }}" method="get">
+           
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <input
+                        type="text"
+                        name="q"
+                        class="form-control search-input"
+                        placeholder="Job title, skills (e.g. Python Developer)"
+                        value="{{ request.args.get('q', '') }}"
+                    >
+                </div>
+                <div class="col-md-4">
+                    <input
+                        type="text"
+                        name="location"
+                        class="form-control search-input"
+                        placeholder="City / Area"
+                        value="{{ request.args.get('location', '') }}"
+                    >
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn-primary-gradient">
+                        <span>Search</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                    <select name="job_type" class="form-control search-input">
+                        <option value="">Any job type</option>
+                        <option value="full_time"
+                            {% if request.args.get('job_type') == 'full_time' %}selected{% endif %}>
+                            Full-time
+                        </option>
+                        <option value="part_time"
+                            {% if request.args.get('job_type') == 'part_time' %}selected{% endif %}>
+                            Part-time
+                        </option>
+                        <option value="contract"
+                            {% if request.args.get('job_type') == 'contract' %}selected{% endif %}>
+                            Contract
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input
+                        type="number"
+                        name="min_salary"
+                        class="form-control search-input"
+                        placeholder="Minimum salary (₹)"
+                        value="{{ request.args.get('min_salary', '') }}"
+                        min="0"
+                    >
+                </div>
+            </div>
+        </form>
+
+        <div class="mt-4" style="font-size:0.9rem; color:#9ca3af;">
+            Popular:
+            <span class="badge rounded-pill" style="background:rgba(148,163,184,0.15); color:#e5e7eb; margin-right:4px;">
+                Python Developer
+            </span>
+            <span class="badge rounded-pill" style="background:rgba(148,163,184,0.15); color:#e5e7eb; margin-right:4px;">
+                Frontend Intern
+            </span>
+            <span class="badge rounded-pill" style="background:rgba(148,163,184,0.15); color:#e5e7eb;">
+                Part-time Local Jobs
+            </span>
+        </div>
+    </div>
+
+    <div class="col-lg-5 fade-up">
+        <div class="hero-image-box">
+            <img
+                src="{{ url_for('static', filename='img/main.jpg') }}"
+                class="hero-image"
+                alt="Job search illustration"
+            >
+        </div>
+    </div>
+</div>
+
+<div class="mt-5 fade-up">
+    <div class="text-center mb-3">
+        <h5 style="color:#e5e7eb; margin-bottom:0.2rem;">Quick glance</h5>
+        <p style="color:#64748b; font-size:0.9rem; margin:0;">
+            A simple overview of what this mini portal focuses on.
+        </p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card-dark" style="padding:12px 14px;">
+                        <div style="color:#a5b4fc; font-size:0.8rem;">Jobs checked today</div>
+                        <div style="color:#e5e7eb; font-size:1.3rem; font-weight:700;">500+</div>
+                        <div style="color:#64748b; font-size:0.85rem;">Students & developers exploring roles</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-dark" style="padding:12px 14px;">
+                        <div style="color:#a5b4fc; font-size:0.8rem;">Cities covered</div>
+                        <div style="color:#e5e7eb; font-size:1.3rem; font-weight:700;">30+</div>
+                        <div style="color:#64748b; font-size:0.85rem;">From metro to tier-2 locations</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-dark" style="padding:12px 14px;">
+                        <div style="color:#a5b4fc; font-size:0.8rem;">Tech focused</div>
+                        <div style="color:#e5e7eb; font-size:1.1rem; font-weight:700;">Python • Web • Internships</div>
+                        <div style="color:#64748b; font-size:0.85rem;">Curated for IT / CS background</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5 fade-up">
+    <div class="text-center mb-3">
+        <h5 style="color:#e5e7eb; margin-bottom:0.2rem;">How it works</h5>
+        <p style="color:#64748b; font-size:0.9rem; margin:0;">
+            Just three simple steps to jump from search to apply.
+        </p>
+    </div>
+
+    <div class="row justify-content-center g-3">
+        <div class="col-md-10">
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <div class="card-dark how-step-card" style="padding:12px 14px;">
+                        <div style="font-size:0.85rem; color:#a5b4fc; margin-bottom:4px;">Step 1</div>
+                        <div style="color:#e5e7eb; font-weight:600; margin-bottom:4px;">Search by role & city</div>
+                        <div style="color:#94a3b8; font-size:0.9rem;">
+                            Type the position you want and your location
+                            like <strong>“python developer, Chandigarh”</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card-dark how-step-card" style="padding:12px 14px;">
+                        <div style="font-size:0.85rem; color:#a5b4fc; margin-bottom:4px;">Step 2</div>
+                        <div style="color:#e5e7eb; font-weight:600; margin-bottom:4px;">Compare job cards</div>
+                        <div style="color:#94a3b8; font-size:0.9rem;">
+                            Check salary, company name and location quickly
+                            in the animated job cards list.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card-dark how-step-card" style="padding:12px 14px;">
+                        <div style="font-size:0.85rem; color:#a5b4fc; margin-bottom:4px;">Step 3</div>
+                        <div style="color:#e5e7eb; font-weight:600; margin-bottom:4px;">Apply in one click</div>
+                        <div style="color:#94a3b8; font-size:0.9rem;">
+                            Open the full job on the source site and submit
+                            your application there instantly.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5 fade-up">
+    <div class="text-center mb-3">
+        <h5 style="color:#e5e7eb; margin-bottom:0.2rem;">See it in action</h5>
+        <p style="color:#64748b; font-size:0.9rem; margin:0;">
+            A quick visual of how students and professionals use this portal.
+        </p>
+    </div>
+
+    <div class="row g-3">
+        
+        <div class="col-md-4">
+            <div class="feature-photo-card">
+                <img
+                    src="{{ url_for('static', filename='img/job_search.jpg') }}"
+                    alt="Student searching local jobs on laptop"
+                    class="feature-photo-img"
+                >
+                <div class="feature-photo-overlay">
+                    <div class="feature-photo-title">Smart local job search</div>
+                    <div class="feature-photo-sub">
+                        Students quickly search roles by city, skills and salary.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="feature-photo-card">
+                <img
+                    src="{{ url_for('static', filename='img/feature.jpg') }}"
+                    alt="Team discussing opportunities"
+                    class="feature-photo-img"
+                >
+                <div class="feature-photo-overlay">
+                    <div class="feature-photo-title">Career planning with friends</div>
+                    <div class="feature-photo-sub">
+                        Groups compare job cards and decide better opportunities.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="feature-photo-card">
+                <img
+                    src="{{ url_for('static', filename='img/feature_city.jpg') }}"
+                    alt="City view representing local opportunities"
+                    class="feature-photo-img"
+                >
+                <div class="feature-photo-overlay">
+                    <div class="feature-photo-title">Opportunities around your city</div>
+                    <div class="feature-photo-sub">
+                        Explore openings in nearby areas – not just big metros.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5 mb-3 fade-up">
+    <div class="text-center mb-2">
+        <h5 style="color:#e5e7eb; margin-bottom:0.2rem;">Explore quickly</h5>
+        <p style="color:#64748b; font-size:0.9rem; margin:0;">
+            Some common combinations students usually try.
+        </p>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
+        <span class="badge-pill-soft">Chandigarh · Mohali · Panchkula</span>
+        <span class="badge-pill-soft">Ludhiana · Jalandhar · Amritsar</span>
+        <span class="badge-pill-soft">Remote friendly roles</span>
+        <span class="badge-pill-soft">Internships for freshers</span>
+        <span class="badge-pill-soft">Part-time evening jobs</span>
+    </div>
+</div>
+
+{% endblock %}

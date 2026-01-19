@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Application · Local Job Portal{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center fade-up">
+  <div class="col-md-6">
+    <div class="card-dark">
+      <h3 style="color:#f9fafb; margin-bottom:0.5rem;">Confirm your email</h3>
+      <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:1rem;">
+        We’ll store this application in your account and then open the job page on Adzuna.
+      </p>
+
+      <div style="margin-bottom:1rem;">
+        <div style="color:#a5b4fc; font-size:0.8rem;">Job</div>
+        <div style="color:#e5e7eb; font-weight:600;">
+          {{ job.title }}
+        </div>
+
+        {% if job.company %}
+        <div style="color:#cbd5e1; font-size:0.9rem;">
+          {{ job.company.display_name }}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- ✅ FIXED FORM -->
+      <form method="post" action="{{ url_for('jobs.apply_job', job_id=job_id) }}">
+
+        <!-- 🔥 PASS COMPANY -->
+        <input type="hidden" name="company"
+               value="{{ job.company.display_name if job.company else '' }}">
+
+        <!-- 🔥 PASS LOCATION -->
+        <input type="hidden" name="location"
+               value="{{ job.location.display_name if job.location else '' }}">
+
+        <div class="mb-3">
+          <label class="form-label" style="color:#cbd5e1;">Email to use</label>
+          <input
+            type="email"
+            name="email"
+            class="form-control search-input"
+            value="{{ default_email }}"
+            required
+          >
+        </div>
+
+        <div class="d-grid mt-3">
+          <button type="submit" class="btn-primary-gradient" style="padding:10px 0;">
+            <span>Continue & open job page</span>
+          </button>
+        </div>
+      </form>
+
+      <p style="color:#64748b; font-size:0.8rem; margin-top:0.8rem;">
+        This job will be stored in your applications history with this email.
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

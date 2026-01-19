@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+/* ========== PAGE WRAPPER ========== */
+.users-wrapper {
+    padding: 35px;
+    animation: fadeSlide 0.6s ease;
+}
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== TITLE ========== */
+.users-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 25px;
+    background: linear-gradient(90deg, #38bdf8, #22c55e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ========== TABLE CARD ========== */
+.table-card {
+    background: linear-gradient(180deg, #020617, #000);
+    border-radius: 20px;
+    padding: 25px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+}
+
+/* Gradient Border */
+.table-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(135deg, #38bdf8, #6366f1, #22c55e);
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* ========== TABLE ========== */
+.admin-table {
+    margin: 0;
+    color: #e5e7eb;
+}
+
+.admin-table thead th {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #9ca3af;
+    border-bottom: 1px solid rgba(148,163,184,0.25);
+}
+
+.admin-table tbody tr {
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.admin-table tbody tr:hover {
+    background: rgba(148,163,184,0.08);
+    transform: scale(1.01);
+}
+
+/* ========== STATUS BADGES ========== */
+.badge {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 999px;
+}
+
+.bg-success {
+    background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+}
+
+.bg-danger {
+    background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+}
+
+/* ========== RESUME STATUS ========== */
+.resume-ok {
+    color: #22c55e;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.resume-ok:hover {
+    text-decoration: underline;
+}
+
+.resume-none {
+    color: #9ca3af;
+}
+
+/* ========== PAGINATION ========== */
+.pagination .page-link {
+    background: #020617;
+    border: 1px solid rgba(148,163,184,0.3);
+    color: #e5e7eb;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #38bdf8, #22c55e);
+    border: none;
+    color: #020617;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6b7280;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .users-wrapper {
+        padding: 20px;
+    }
+}
+</style>
+
+<div class="users-wrapper">
+    <h2 class="users-title">User Management</h2>
+
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="table table-borderless admin-table align-middle">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Resume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.full_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>
+                            {% if user.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Blocked</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.resume_filename %}
+                                <a
+                                    href="{{ url_for('admin.view_resume', user_id=user.id) }}"
+                                    target="_blank"
+                                    class="resume-ok">
+                                    View
+                                </a>
+                            {% else %}
+                                <span class="resume-none">No Resume</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ================= PAGINATION BAR ================= -->
+    {% if pagination and pagination.pages > 1 %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+
+            <!-- Previous -->
+            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                <a class="page-link"
+                   href="{{ url_for('admin.users', page=pagination.prev_num) }}">
+                    Previous
+                </a>
+            </li>
+
+            <!-- Page Numbers -->
+            {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                        <a class="page-link"
+                           href="{{ url_for('admin.users', page=page_num) }}">
+                            {{ page_num }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">…</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            <!-- Next -->
+            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                <a class="page-link"
+                   href="{{ url_for('admin.users', page=pagination.next_num) }}">
+                    Next
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

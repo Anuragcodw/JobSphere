@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+
+<style>
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes softBorderMove {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.profile-box {
+  padding: 30px;
+  border-radius: 18px;
+  margin-top: 25px;
+  background: rgba(12, 17, 28, 0.65);
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  animation: fadeUp .5s ease-out;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.profile-box::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    120deg,
+    rgba(99,179,237,0.6),
+    rgba(74,222,128,0.6),
+    rgba(167,139,250,0.6)
+  );
+  background-size: 300% 300%;
+  filter: blur(14px);
+  z-index: -1;
+  animation: softBorderMove 8s ease-in-out infinite alternate;
+  opacity: 0.3;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #a5b4fc;
+  margin-top: 14px;
+}
+
+.section-text {
+  font-size: 1.05rem;
+  color: #e2e8f0;
+  margin-bottom: 12px;
+}
+
+.badge-pill-soft {
+  padding: 6px 16px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  color: #cbd5e1;
+  margin: 4px;
+}
+
+.progress-wrap {
+  margin-top: 18px;
+  text-align: left;
+}
+
+.progress-label {
+  color: #c7d2fe;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.progress {
+  height: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg,#60a5fa,#34d399);
+  border-radius: 10px;
+}
+
+.illustration {
+  width: 90%;
+  max-width: 280px;
+  opacity: 0.9;
+  filter: drop-shadow(0px 0px 12px rgba(0,120,255,0.25));
+}
+</style>
+
+<div class="row justify-content-center align-items-center">
+
+  <div class="col-md-7">
+    <div class="profile-box">
+
+      <h2 style="color:white;">{{ current_user.full_name }}</h2>
+      <p style="color:#cbd5e1;">{{ current_user.email }}</p>
+
+      {% set completion = current_user.profile_completion() %}
+      <div class="progress-wrap">
+        <div class="progress-label">
+          Profile Completion — <strong>{{ completion }}%</strong>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" style="width: {{ completion }}%;"></div>
+        </div>
+
+        {% if completion < 70 %}
+          <small style="color:#fbbf24;">
+            Complete your profile to get better job matches
+          </small>
+        {% endif %}
+      </div>
+
+      <hr style="border-color:#334155; margin:18px 0;">
+
+      <h4 class="section-title">Parsed Skills</h4>
+      <div class="section-text">
+        {% for skill in current_user.get_skills_list() %}
+          <span class="badge-pill-soft">{{ skill }}</span>
+        {% else %}
+          <span style="color:#64748b;">No skills parsed yet.</span>
+        {% endfor %}
+      </div>
+
+      <h4 class="section-title">Experience</h4>
+      <p class="section-text">
+        {{ current_user.experience_years or "Not available" }}
+      </p>
+
+      <h4 class="section-title">Education</h4>
+      <p class="section-text">
+        {{ current_user.education_text or "Not available" }}
+      </p>
+
+
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="{{ url_for('profile.upload_resume') }}" class="btn-primary-gradient">
+          Upload Resume
+        </a>
+
+        <a href="{{ url_for('profile.edit_profile') }}" class="btn-secondary-gradient">
+          Edit Profile
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="col-md-5 text-center">
+    <img src="https://cdn-icons-png.flaticon.com/512/7010/7010031.png"
+         class="illustration">
+  </div>
+
+</div>
+
+{% endblock %}

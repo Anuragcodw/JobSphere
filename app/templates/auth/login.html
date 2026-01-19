@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Login · Local Job Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center auth-row fade-up">
+  <div class="col-lg-5 col-md-7">
+    <div class="auth-card">
+
+      <!-- ================= FLASH MESSAGES (ADDED ONLY) ================= -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert 
+              {% if category == 'error' %}alert-danger{% endif %}
+              {% if category == 'success' %}alert-success{% endif %}
+              alert-dismissible fade show mb-3" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <!-- ================================================================ -->
+
+      <!-- Top text -->
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+          <h3 class="auth-title mb-1">Welcome back 👋</h3>
+          <p class="auth-subtitle mb-0">
+            Login to search local jobs, track roles and apply in one click.
+          </p>
+        </div>
+        <span class="badge-soft">
+          <span>🔒</span> Secure login
+        </span>
+      </div>
+
+      <!-- Form -->
+      <form method="post" action="{{ url_for('auth.login', next=request.args.get('next')) }}">
+        <div class="mb-3 input-with-icon">
+          <span class="input-icon">📧</span>
+          <label class="form-label" style="color:#cbd5e1;">Email</label>
+          <input type="email" name="email" class="form-control search-input" required>
+        </div>
+
+        <div class="mb-2 input-with-icon">
+          <span class="input-icon">🔑</span>
+          <label class="form-label" style="color:#cbd5e1;">Password</label>
+          <input type="password" name="password" class="form-control search-input" required>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3" style="font-size:0.8rem;">
+          <span style="color:#64748b;">Use the same account for all your devices.</span>
+        </div>
+
+        <div class="d-grid mt-2">
+          <button type="submit" class="btn-primary-gradient" style="padding:10px 0;">
+            <span>Login & start searching</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Bottom links -->
+      <p class="auth-footer-text mt-3 mb-0">
+        New to Local Job Portal?
+        <a href="{{ url_for('auth.register') }}" class="auth-link">
+          Create a free account
+        </a>
+      </p>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

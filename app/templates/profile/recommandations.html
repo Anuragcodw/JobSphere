@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Recommended Jobs{% endblock %}
+
+{% block content %}
+<h3>Jobs recommended for you</h3>
+
+{% if not ranked %}
+  <p>No recommendations yet. Upload or update your resume to get recommendations.</p>
+{% else %}
+  <div class="row g-3">
+    {% for r in ranked %}
+      {% set job = r.job %}
+      <div class="col-md-6">
+        <div class="card-dark" style="padding:14px; border-radius:10px;">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 style="margin:0">{{ job.title }}</h5>
+              <div style="color:#94a3b8; font-size:0.9rem;">{{ job.company_name or '' }}</div>
+              <div style="color:#9ca3af; font-size:0.85rem;">Req skills: {{ r.total_required }}</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-weight:700; font-size:1.1rem;">{{ r.score }}%</div>
+              <div style="font-size:0.85rem; color:#94a3b8;">Match</div>
+            </div>
+          </div>
+
+          <hr style="border-color:#274155; margin:10px 0;">
+
+          <div>
+            <strong>Matched:</strong>
+            {% if r.matched_skills %}
+              {% for s in r.matched_skills %}
+                <span class="badge-pill-soft" style="margin-right:6px;">{{ s }}</span>
+              {% endfor %}
+            {% else %}
+              <span style="color:#64748b;">None</span>
+            {% endif %}
+          </div>
+
+          <div style="margin-top:10px;">
+            <a href="{{ url_for('jobs.view_job', job_id=job.id) }}" class="btn-primary-gradient btn-sm">View Job</a>
+          </div>
+
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+.admin-wrapper {
+    padding: 40px;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.15), transparent 40%),
+        radial-gradient(circle at bottom right, rgba(34,197,94,0.15), transparent 40%),
+        linear-gradient(180deg, #020617, #000000);
+    animation: fadeIn 0.7s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.admin-header h2 {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #38bdf8, #22c55e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.admin-header a {
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.admin-header a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(79,70,229,0.45);
+}
+
+/* FIXED GRID */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 45px;
+}
+
+.stat-card {
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.25),
+        inset 0 0 0 1px rgba(99,102,241,0.35);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow:
+        0 30px 70px rgba(0,0,0,0.35),
+        0 0 25px rgba(56,189,248,0.35);
+}
+
+.stat-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.stat-value {
+    margin-top: 8px;
+    font-size: 36px;
+    font-weight: 800;
+    color: #020617;
+}
+
+/* Only Average Rating colorful */
+.stat-card.rating-card {
+    background: linear-gradient(135deg, #38bdf8, #22c55e, #6366f1);
+    color: #ffffff;
+    box-shadow:
+        0 18px 45px rgba(56,189,248,0.45),
+        0 0 30px rgba(34,197,94,0.35);
+}
+
+.stat-card.rating-card .stat-title {
+    color: rgba(255,255,255,0.9);
+}
+
+.stat-card.rating-card .stat-value {
+    color: #ffffff;
+    font-size: 38px;
+    font-weight: 900;
+    text-shadow: 0 4px 16px rgba(0,0,0,0.35);
+}
+
+/* ACTION CARDS */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 26px;
+}
+
+.action-card {
+    background: linear-gradient(160deg, #020617, #020617);
+    border-radius: 22px;
+    padding: 30px;
+    color: #e5e7eb;
+    text-decoration: none;
+    border: 1px solid rgba(148,163,184,0.25);
+    box-shadow:
+        inset 0 0 0 1px rgba(148,163,184,0.35),
+        0 20px 55px rgba(0,0,0,0.6);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.action-card:hover {
+    transform: translateY(-10px) scale(1.04);
+    box-shadow:
+        0 35px 90px rgba(0,0,0,0.85),
+        0 0 30px rgba(99,102,241,0.5);
+}
+
+.action-card h5 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #ffffff;
+}
+
+.action-card p {
+    font-size: 14px;
+    opacity: 0.8;
+}
+</style>
+
+<div class="admin-wrapper">
+    <div class="admin-header">
+        <h2>Admin Dashboard</h2>
+        <a href="{{ url_for('admin.users') }}">Manage Users</a>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-title">Total Users</div>
+            <div class="stat-value">{{ total_users or 0 }}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Total Jobs</div>
+            <div class="stat-value">{{ total_jobs or 0 }}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Active Users</div>
+            <div class="stat-value">{{ active_users or 0 }}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Total Reviews</div>
+            <div class="stat-value">{{ total_reviews or 0 }}</div>
+        </div>
+
+        <div class="stat-card rating-card">
+            <div class="stat-title">Average Rating</div>
+            <div class="stat-value">{{ avg_rating or 0 }} ★</div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <a href="{{ url_for('admin.users') }}" class="action-card">
+            <h5>User Management</h5>
+            <p>View, block, or activate users</p>
+        </a>
+
+        <a href="{{ url_for('admin.jobs') }}" class="action-card">
+            <h5>Job Management</h5>
+            <p>Approve or remove posted jobs</p>
+        </a>
+
+        <a href="{{ url_for('admin.analytics') }}" class="action-card">
+            <h5>Analytics</h5>
+            <p>Platform performance overview</p>
+        </a>
+
+        <a href="{{ url_for('admin.reviews') }}" class="action-card">
+            <h5>Reviews</h5>
+            <p>View job reviews & ratings</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

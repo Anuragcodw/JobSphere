@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Companies · Local Job Portal{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title fade-up">Search Companies</h2>
+
+<p class="fade-up" style="color:#94a3b8; max-width:520px;">
+    Type any company name and quickly open its details on Google.
+    You can also check jobs for that company directly.
+</p>
+
+<!-- SEARCH BAR -->
+<form action="{{ url_for('main.companies') }}" method="get" class="mt-3 fade-up">
+    <div class="row g-3">
+        <div class="col-md-9">
+            <input
+                type="text"
+                name="name"
+                class="form-control search-input"
+                placeholder="e.g. TCS, Infosys, Google, Wipro"
+                value="{{ name or '' }}"
+                required
+            >
+        </div>
+        <div class="col-md-3 d-grid">
+            <button type="submit" class="btn-primary-gradient">
+                <span>Search Company</span>
+            </button>
+        </div>
+    </div>
+</form>
+
+<hr style="border-color:#334155; margin:20px 0;">
+
+<!-- Demo Company Photos -->
+<div class="mt-4 fade-up">
+    <h5 style="color:#e5e7eb; margin-bottom:0.5rem;">Popular Companies</h5>
+    <p style="color:#64748b; font-size:0.9rem; margin-bottom:1rem;">
+        Here’s a quick visual of workplaces people often search for.
+    </p>
+
+    <div class="row g-3">
+
+        <!-- Photo 1 -->
+        <div class="col-md-4">
+            <div class="company-demo-card">
+                <img src="{{ url_for('static', filename='img/google.jpg') }}"
+                     class="company-demo-img">
+                <div class="company-demo-overlay">
+                    <div class="company-demo-title">Google</div>
+                    <div class="company-demo-sub">Office · Teams · Work culture</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photo 2 -->
+        <div class="col-md-4">
+            <div class="company-demo-card">
+                <img src="{{ url_for('static', filename='img/microsoft.jpeg') }}"
+                     class="company-demo-img">
+                <div class="company-demo-overlay">
+                    <div class="company-demo-title">Microsoft</div>
+                    <div class="company-demo-sub">Meetings · Workplace</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photo 3 -->
+        <div class="col-md-4">
+            <div class="company-demo-card">
+                <img src="{{ url_for('static', filename='img/infosyis.jpg') }}"
+                     class="company-demo-img">
+                <div class="company-demo-overlay">
+                    <div class="company-demo-title">TCS</div>
+                    <div class="company-demo-sub">India · Corporate offices</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- RESULT CARD -->
+{% if name %}
+<div class="fade-up">
+    <h5 style="color:#e5e7eb; margin-bottom:0.8rem;">
+        Search result for:
+        <span style="color:#a5b4fc;">{{ name }}</span>
+    </h5>
+
+    <div class="card-dark job-card" style="padding:16px 16px 14px;">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+                <h4 class="job-title" style="margin-bottom:4px;">
+                    {{ name }}
+                </h4>
+                <p style="color:#94a3b8; font-size:0.9rem; margin:0;">
+                    Open this company in Google to see official website,
+                    reviews, photos and more details.
+                </p>
+            </div>
+
+            <span class="job-tag-chip">
+                <span>🏢</span> Company
+            </span>
+        </div>
+
+        <div class="job-footer-row">
+            <div class="job-footer-note">
+                We use Google so you always get the latest and correct information.
+            </div>
+
+            <div class="d-flex gap-2">
+                {% if google_url %}
+                <a href="{{ google_url }}" target="_blank"
+                   class="btn-primary-gradient"
+                   style="padding:8px 14px; text-decoration:none; font-size:0.85rem;">
+                    🌐 Open on Google
+                </a>
+                {% endif %}
+
+                {% if jobs_url %}
+                <a href="{{ jobs_url }}" target="_blank"
+                   class="btn btn-sm btn-ghost"
+                   style="
+                        border-radius:999px;
+                        padding:7px 12px;
+                        font-size:0.8rem;
+                        color:#e5e7eb;
+                   ">
+                    💼 View jobs
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<p class="fade-up" style="color:#64748b; font-size:0.9rem;">
+    Start by typing a company name above. For example:
+    <span style="color:#a5b4fc;">TCS</span>,
+    <span style="color:#a5b4fc;">Infosys</span>,
+    <span style="color:#a5b4fc;">Google</span>.
+</p>
+{% endif %}
+
+{% endblock %}

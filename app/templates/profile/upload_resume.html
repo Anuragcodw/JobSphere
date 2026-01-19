@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}Upload Resume{% endblock %}
+
+{% block content %}
+<style>
+.upload-card {
+  padding:20px;
+  border-radius:12px;
+  position:relative;
+}
+
+#resumeInput {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  width: 100% !important;
+  height: auto !important;
+  z-index: 2;
+  position: relative;
+  pointer-events: auto !important;
+}
+
+.btn-primary-gradient {
+  padding:10px 18px;
+  border-radius:12px;
+  border: none;
+  cursor: pointer;
+  font-weight:600;
+  background: linear-gradient(90deg,#60a5fa,#34d399);
+  color: #042;
+}
+
+
+.btn-choose {
+  padding:8px 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.06);
+  background:transparent;
+  color:inherit;
+  cursor:pointer;
+}
+
+.file-label {
+  display:block;
+  cursor:pointer;
+  margin-bottom:6px;
+}
+
+#selectedFile {
+  margin-top:8px;
+  color:#9ca3af;
+  font-size:0.95rem;
+}
+</style>
+
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card-dark upload-card">
+
+      <h4 style="color:#f9fafb;">Upload your resume (PDF)</h4>
+      <p style="color:#94a3b8;">We’ll parse skills & experience automatically.</p>
+
+      <form id="resumeForm" method="post" enctype="multipart/form-data" novalidate>
+        <div class="mb-3">
+          <label for="resumeInput" class="file-label" style="color:#cbd5e1;">Choose PDF file</label>
+
+          <input id="resumeInput"
+                 type="file"
+                 name="resume"
+                 accept="application/pdf"
+                 class="form-control"
+                 required>
+
+          <div id="selectedFile" aria-live="polite"></div>
+        </div>
+
+        <div class="d-flex gap-2">
+         
+          <button id="uploadBtn" type="button" class="btn-primary-gradient">
+            Upload & Parse
+          </button>
+
+      
+          <button id="chooseFileBtn" type="button" class="btn-choose">
+            Choose file
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-3" style="color:#64748b; font-size:0.9rem;">
+        Parsed results will update your profile skills & experience automatically.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const chooseBtn = document.getElementById('chooseFileBtn');
+  const fileInput = document.getElementById('resumeInput');
+  const selectedDiv = document.getElementById('selectedFile');
+  const form = document.getElementById('resumeForm');
+  const uploadBtn = document.getElementById('uploadBtn');
+
+  if (form && form.enctype.toLowerCase() !== 'multipart/form-data') {
+    form.enctype = 'multipart/form-data';
+  }
+
+  if (chooseBtn && fileInput) {
+    chooseBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      fileInput.click();
+    });
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', function(){
+      const f = fileInput.files && fileInput.files[0];
+      if (f) {
+        const sizeKB = Math.round(f.size / 1024);
+        selectedDiv.textContent = `Selected: ${f.name} (${sizeKB} KB)`;
+      } else {
+        selectedDiv.textContent = "";
+      }
+    });
+  }
+
+  
+  if (uploadBtn && fileInput && form) {
+    uploadBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      const hasFile = fileInput.files && fileInput.files.length > 0;
+      if (!hasFile) {
+       
+        fileInput.click();
+        return;
+      }
+      const f = fileInput.files[0];
+      const allowed = ['pdf'];
+      const ext = (f.name.split('.').pop() || '').toLowerCase();
+      if (!allowed.includes(ext)) {
+        alert('Please select a PDF file.');
+        return;
+      }
+
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = 'Uploading...';
+
+      
+      form.submit();
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', function(){
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = 'Uploading...';
+    });
+  }
+
+})();
+</script>
+{% endblock %}

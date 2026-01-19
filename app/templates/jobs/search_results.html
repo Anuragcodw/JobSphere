@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Job Search Results{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title fade-up">Search Results</h2>
+
+<p class="fade-up" style="color:#94a3b8;">
+    Showing results for:
+    <strong style="color:#e5e7eb;">"{{ q }}"</strong>
+    {% if location %}
+        in <strong style="color:#e5e7eb;">{{ location }}</strong>
+    {% endif %}
+    {% if job_type %}
+        · <span style="color:#a5b4fc;">{{ job_type.replace('_', ' ') }}</span>
+    {% endif %}
+    {% if min_salary %}
+        · <span style="color:#22c55e;">₹{{ min_salary }}+ salary</span>
+    {% endif %}
+</p>
+
+<div class="row mt-4 fade-up">
+
+    {% if jobs and jobs|length > 0 %}
+
+        {% for job in jobs %}
+        <div class="col-md-6 mb-4">
+            <div class="card-dark job-card">
+
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                    <div>
+                        <h4 class="job-title">
+                            {{ job.title }}
+                        </h4>
+
+                        {% if job.company %}
+                        <p class="job-company">
+                            {{ job.company.display_name }}
+                        </p>
+                        {% endif %}
+
+                        {% if job.location %}
+                        <p class="job-location">
+                            📍 {{ job.location.display_name }}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <span class="job-tag-chip">
+                        <span style="font-size:0.8rem;">🧩</span>
+                        {{ job.contract_type if job.contract_type else "Job" }}
+                    </span>
+                </div>
+
+                
+                <div class="job-meta-row">
+                    <div>
+                        {% if job.salary_min %}
+                        <div class="job-salary">
+                            💰 ₹{{ job.salary_min | int }} – ₹{{ job.salary_max | int }}
+                        </div>
+                        {% else %}
+                        <div class="job-salary" style="color:#94a3b8;">
+                            💰 Salary not disclosed
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if job.created %}
+                    <div style="font-size:0.78rem; color:#64748b; text-align:right;">
+                        Posted: {{ job.created[:10] }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                
+                <div class="job-footer-row">
+                    <div>
+                        {% if job.category %}
+                        <span class="job-tag-chip">
+                            <span>📂</span>
+                            {{ job.category.label }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <a
+                        href="{{ url_for('jobs.job_detail', job_id=loop.index0) }}"
+                        class="btn-primary-gradient"
+                        style="padding:8px 18px; text-decoration:none; font-size:0.9rem;"
+                    >
+                        <span>View details</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+
+    {% else %}
+        <p style="color:#94a3b8; font-size:1.1rem;">
+            No jobs found 🔍
+        </p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

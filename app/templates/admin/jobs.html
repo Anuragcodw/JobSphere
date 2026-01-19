@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+/* ======= EXISTING CSS (UNCHANGED) ======= */
+.jobs-wrapper {
+    padding: 35px;
+    animation: fadeSlide 0.6s ease;
+}
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.jobs-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 25px;
+    background: linear-gradient(90deg, #38bdf8, #22c55e, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.table-card {
+    background: linear-gradient(180deg, #020617, #000);
+    border-radius: 22px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.75);
+}
+.table-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    padding: 2px;
+    background: linear-gradient(135deg,#38bdf8,#6366f1,#22c55e,#06b6d4);
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+.admin-table { margin: 0; color: #e5e7eb; }
+.admin-table thead th {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #9ca3af;
+    border-bottom: 1px solid rgba(148,163,184,0.25);
+}
+.admin-table tbody tr {
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+.admin-table tbody tr:hover {
+    background: rgba(148,163,184,0.08);
+    transform: scale(1.01);
+}
+.badge {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+.bg-success {
+    background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+}
+.bg-warning {
+    background: linear-gradient(135deg, #facc15, #eab308) !important;
+    color: #000;
+}
+.btn-outline-success,
+.btn-outline-danger {
+    border-radius: 999px;
+    transition: all 0.3s ease;
+}
+.btn-outline-success:hover {
+    background: rgba(34,197,94,0.15);
+    box-shadow: 0 0 15px rgba(34,197,94,0.5);
+    transform: translateY(-2px);
+}
+.btn-outline-danger:hover {
+    background: rgba(239,68,68,0.15);
+    box-shadow: 0 0 15px rgba(239,68,68,0.5);
+    transform: translateY(-2px);
+}
+.pagination .page-link {
+    background: transparent;
+    border: 1px solid rgba(148,163,184,0.35);
+    color: #e5e7eb;
+}
+.pagination .page-link:hover {
+    background: rgba(99,102,241,0.25);
+}
+@media (max-width: 768px) {
+    .jobs-wrapper { padding: 20px; }
+}
+</style>
+
+<div class="jobs-wrapper">
+    <h2 class="jobs-title">Job Management</h2>
+
+    <!-- 🔍 LOCATION FILTER -->
+    <form method="get" class="mb-3 d-flex gap-2">
+        <input
+            type="text"
+            name="location"
+            class="form-control"
+            placeholder="Filter by location (e.g. Delhi)"
+            value="{{ selected_location or '' }}"
+        >
+        <button class="btn btn-outline-info">Filter</button>
+
+        {% if selected_location %}
+        <a href="{{ url_for('admin.jobs') }}" class="btn btn-outline-secondary">
+            Clear
+        </a>
+        {% endif %}
+    </form>
+
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Company</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Approve</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% if jobs %}
+                    {% for job in jobs %}
+                    <tr>
+                        <!-- ✅ SERIAL FIX -->
+                        <td>{{ loop.index + ((pagination.page - 1) * pagination.per_page) }}</td>
+
+                        <td>{{ job.title }}</td>
+                        <td>{{ job.company_name or "-" }}</td>
+                        <td>{{ job.location or "-" }}</td>
+                        <td>
+                            {% if job.is_approved is defined and job.is_approved %}
+                                <span class="badge bg-success">Approved</span>
+                            {% else %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin.toggle_job', job_id=job.id) }}"
+                               class="btn btn-sm btn-outline-success">Toggle</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin.delete_job', job_id=job.id) }}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Delete this job?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <!-- ✅ EMPTY STATE -->
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No jobs found for this location
+                        </td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if pagination.pages > 1 %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if pagination.has_prev %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="{{ url_for('admin.jobs', page=pagination.prev_num, location=selected_location) }}">
+                   Prev
+                </a>
+            </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Page {{ pagination.page }} of {{ pagination.pages }}
+                </span>
+            </li>
+
+            {% if pagination.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="{{ url_for('admin.jobs', page=pagination.next_num, location=selected_location) }}">
+                   Next
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

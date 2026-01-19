@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}My Applications{% endblock %}
+
+{% block content %}
+
+<h2 class="page-title fade-up">My Applications</h2>
+
+<p class="fade-up" style="color:#94a3b8; margin-bottom: 1rem;">
+    All jobs you have applied for so far.
+</p>
+
+{% if applications and applications|length > 0 %}
+
+    <div class="applications-timeline fade-up">
+        {% for app in applications %}
+        <a
+            href="{{ app.adzuna_url if app.adzuna_url else '#' }}"
+            target="_blank"
+            class="application-row"
+        >
+           
+            <div class="app-left">
+                <div class="app-index">
+                    #{{ loop.index }}
+                </div>
+                <div class="app-date">
+                    {{ app.applied_at.strftime("%Y-%m-%d %H:%M") if app.applied_at else "" }}
+                </div>
+            </div>
+
+        
+            <div class="app-middle">
+                <div class="app-job-title">
+                    {{ app.job_title or "Untitled Job" }}
+                </div>
+                <div class="app-meta-line">
+                    {% if app.company %}
+                        <span class="app-company">{{ app.company }}</span>
+                    {% endif %}
+                    {% if app.location %}
+                        <span class="app-dot">•</span>
+                        <span class="app-location">{{ app.location }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            
+            <div class="app-right">
+                {% if app.email_used %}
+                    <div class="app-email">
+                        📧 {{ app.email_used }}
+                    </div>
+                {% endif %}
+                <div class="app-status-pill">
+                    View on Adzuna →
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+{% else %}
+    <p class="fade-up" style="color:#94a3b8; font-size:1.05rem;">
+        You haven’t applied to any jobs yet.
+    </p>
+{% endif %}
+
+{% endblock %}

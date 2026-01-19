@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="fade-up">
+
+  <!-- ================= HEADER + REVIEWS ROW ================= -->
+  <div class="row align-items-start mb-3">
+
+    <!-- LEFT: Job Info -->
+    <div class="col-lg-7">
+      <span class="badge-pill-soft dot mb-2">
+        {{ job.contract_type if job.contract_type else "Job" }}
+      </span>
+
+      <h2 class="page-title">{{ job.title }}</h2>
+
+      {% if job.company %}
+      <p style="color:#cbd5e1;margin-bottom:4px;">
+        {{ job.company.display_name }}
+      </p>
+      {% endif %}
+
+      {% if job.location %}
+      <p style="color:#94a3b8;margin-bottom:10px;">
+        📍 {{ job.location.display_name }}
+      </p>
+      {% endif %}
+
+      {% if job.redirect_url %}
+      <div style="
+          margin-top:10px;
+          display:inline-block;
+          padding:12px 16px;
+          border-radius:14px;
+          position:relative;
+          background:rgba(12,17,28,0.9);
+          border:1px solid rgba(255,255,255,0.08);
+      ">
+        <div style="
+            position:absolute;
+            inset:-2px;
+            border-radius:inherit;
+            background:linear-gradient(
+              120deg,
+              rgba(34,211,238,.7),
+              rgba(99,102,241,.7),
+              rgba(167,139,250,.7)
+            );
+            filter:blur(14px);
+            opacity:.45;
+            z-index:-1;
+        "></div>
+
+        <a href="{{ job.redirect_url }}"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="btn btn-primary-gradient"
+           style="padding:8px 26px;font-weight:600;">
+          🚀 Apply Now
+        </a>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- RIGHT: Compact Reviews -->
+    <div class="col-lg-5 mt-3 mt-lg-0">
+      <div class="card-dark p-3"
+           style="
+             border-radius:18px;
+             position:relative;
+             overflow:hidden;
+             background:linear-gradient(160deg,#0b1530,#020617);
+             border:1px solid rgba(148,163,184,0.25);
+             transition:all .35s ease;
+           "
+           onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 20px 60px rgba(99,102,241,.35)'"
+           onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+
+        <h6 style="color:#f9fafb;margin-bottom:6px;">User Reviews</h6>
+
+        {% if reviews and reviews|length > 0 %}
+          {% set r = reviews[0] %}
+          <div class="d-flex justify-content-between align-items-center">
+            <strong style="color:#e5e7eb;font-size:.9rem;">{{ r.user_name }}</strong>
+            <span style="color:#facc15;font-size:.85rem;">
+              {% for i in range(r.rating) %}★{% endfor %}
+            </span>
+          </div>
+          <p style="color:#cbd5e1;font-size:.8rem;margin-top:6px;">
+            {{ r.comment }}
+          </p>
+        {% else %}
+          <p style="color:#94a3b8;font-size:.8rem;">No reviews yet.</p>
+        {% endif %}
+
+        {% if db_job %}
+<div style="position:relative; z-index:5;">
+  <form method="post"
+        action="{{ url_for('jobs.add_review', job_id=job_id) }}"
+        class="mt-2 d-flex gap-2">
+
+    <select name="rating" class="form-control search-input" required style="max-width:90px;">
+      <option value="">★</option>
+      <option value="5">★★★★★</option>
+      <option value="4">★★★★</option>
+      <option value="3">★★★</option>
+      <option value="2">★★</option>
+      <option value="1">★</option>
+    </select>
+
+    <input
+      type="text"
+      name="comment"
+      class="form-control search-input"
+      placeholder="Write..."
+      required
+    >
+
+    <button class="btn btn-primary-gradient px-3">Post</button>
+  </form>
+</div>
+{% endif %}
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <div class="row g-4 mt-2">
+
+    <!-- LEFT -->
+    <div class="col-lg-5">
+
+      {% if job.location %}
+      <div class="card-dark p-3 mb-3">
+        <div style="color:#94a3b8;font-size:0.8rem;">Location</div>
+        <strong style="color:#e5e7eb;">
+          {{ job.location.display_name }}
+        </strong>
+        <div style="color:#64748b;font-size:0.8rem;margin-top:4px;">
+          Showing approximate job location on map.
+        </div>
+      </div>
+      {% endif %}
+
+      <div id="job-map"
+           style="height:260px;border-radius:16px;overflow:hidden;">
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="col-lg-7">
+      <div class="card-dark p-4" style="margin-top:-6px;">
+        <h5 style="color:#f9fafb;">Job Description</h5>
+        <p style="color:#cbd5e1;white-space:pre-line;">
+          {{ job.description }}
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const locationName = "{{ job.location.display_name if job.location else '' }}";
+  const lat = {{ job.latitude | tojson }};
+  const lon = {{ job.longitude | tojson }};
+
+  if (typeof lat === "number" && typeof lon === "number") {
+    initJobMap(lat, lon);
+    return;
+  }
+
+  if (!locationName) return;
+
+  fetch(
+    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`,
+    {
+      headers: {
+        "Accept": "application/json",
+        "User-Agent": "JobSphere/1.0"
+      }
+    }
+  )
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.length > 0) {
+        initJobMap(parseFloat(data[0].lat), parseFloat(data[0].lon));
+      }
+    })
+    .catch(err => console.error(err));
+});
+</script>
+{% endblock %}
