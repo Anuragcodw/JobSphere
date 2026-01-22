@@ -94,8 +94,11 @@ def create_app():
             print("DB create_all() error:", repr(e))
 
     # ---- Google Search Console Verification ----
+    # app/__init__.py ke end me, return app se pehle
+
     @app.route("/googlebe5a9285b24fdce8.html")
     def google_verify():
-        return send_from_directory("static", "googlebe5a9285b24fdce8.html")
+        return send_from_directory(app.static_folder, "googlebe5a9285b24fdce8.html")
+
 
     return app
