@@ -36,21 +36,6 @@ Admins can manage users, approve jobs, monitor reviews, and view analytics.
 - JavaScript for UI & maps
 - External Job API integration
 
-## Project Structure
-
-local_job_portal/
-│
-├── app/
-│   ├── models/
-│   ├── routes/
-│   ├── templates/
-│   └── services/
-│
-├── admin/
-├── static/
-├── run.py
-├── requirements.txt
-└── README.md
 
 ## Project Structure
 
