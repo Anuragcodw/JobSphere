@@ -2,7 +2,7 @@
 import pymysql
 pymysql.install_as_MySQLdb()   # safe even if not using PyMySQL
 
-from flask import Flask, session
+from flask import Flask, session, send_from_directory
 from config import Config
 from app.extensions import db, login_manager   # ✅ STEP-2 ADD
 from app.models.user import User               # ✅ STEP-2 ADD
@@ -92,5 +92,10 @@ def create_app():
             print("DB create_all() ran successfully.")
         except Exception as e:
             print("DB create_all() error:", repr(e))
+
+    # ---- Google Search Console Verification ----
+    @app.route("/googlebe5a9285b24fdce8.html")
+    def google_verify():
+        return send_from_directory("static", "googlebe5a9285b24fdce8.html")
 
     return app
