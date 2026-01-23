@@ -6,7 +6,6 @@ from flask import Flask, session, send_from_directory
 from config import Config
 from app.extensions import db, login_manager   # ✅ STEP-2 ADD
 from app.models.user import User               # ✅ STEP-2 ADD
-from flask import send_from_directory
 
 
 def create_app():
@@ -95,14 +94,13 @@ def create_app():
             print("DB create_all() error:", repr(e))
 
     # ---- Google Search Console Verification ----
-    # app/__init__.py ke end me, return app se pehle
-
     @app.route("/googlebe5a9285b24fdce8.html")
     def google_verify():
         return send_from_directory(app.static_folder, "googlebe5a9285b24fdce8.html")
 
+    # ---- Sitemap ----
     @app.route("/sitemap.xml")
-def sitemap():
-    return send_from_directory("static", "sitemap.xml")
+    def sitemap():
+        return send_from_directory(app.static_folder, "sitemap.xml")
 
     return app
