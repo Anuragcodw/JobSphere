@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jobsphere-eb2e.onrender.com/sitemap.xml
