@@ -93,7 +93,7 @@ def create_app():
         except Exception as e:
             print("DB create_all() error:", repr(e))
 
-    # ---- Google Search Console Verification ----
+     # ---- Google Search Console Verification ----
     @app.route("/googlebe5a9285b24fdce8.html")
     def google_verify():
         return send_from_directory(app.static_folder, "googlebe5a9285b24fdce8.html")
@@ -102,8 +102,10 @@ def create_app():
     @app.route("/sitemap.xml")
     def sitemap():
         return send_from_directory(app.static_folder, "sitemap.xml")
-@app.route("/robots.txt")
-def robots():
-    return send_from_directory(app.static_folder, "robots.txt")
+
+    # ---- Robots.txt (agar add kiya hai) ----
+    @app.route("/robots.txt")
+    def robots():
+        return send_from_directory(app.static_folder, "robots.txt")
 
     return app
