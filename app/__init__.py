@@ -98,14 +98,6 @@ def create_app():
     def google_verify():
         return send_from_directory(app.static_folder, "googlebe5a9285b24fdce8.html")
 
-    # ---- Sitemap ----
-    @app.route("/sitemap.xml")
-    def sitemap():
-        return send_from_directory(app.static_folder, "sitemap.xml")
-
-    # ---- Robots.txt (agar add kiya hai) ----
-    @app.route("/robots.txt")
-    def robots():
-        return send_from_directory(app.static_folder, "robots.txt")
+    
 
     return app
