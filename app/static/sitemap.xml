@@ -4,9 +4,6 @@
     <loc>https://jobsphere-eb2e.onrender.com/</loc>
   </url>
   <url>
-    <loc>https://jobsphere-eb2e.onrender.com/jobs</loc>
-  </url>
-  <url>
-    <loc>https://jobsphere-eb2e.onrender.com/login</loc>
+    <loc>https://jobsphere-eb2e.onrender.com/jobs/search</loc>
   </url>
 </urlset>

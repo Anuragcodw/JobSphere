@@ -1,3 +1,9 @@
+## Live Demo
+
+https://jobsphere-eb2e.onrender.com
+
+This project is fully deployed on Render and accessible publicly 
+
 # Local Job Portal
 
 A full-stack job portal built with Flask where users can search jobs, apply, manage profiles,
@@ -65,3 +71,4 @@ Password: admin123
 - Advanced analytics charts
 - Mobile responsive PWA
 - AI-based job recommendations
+
