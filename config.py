@@ -1,15 +1,20 @@
 import os
 from dotenv import load_dotenv
 
+# Load environment variables automatically
+load_dotenv()
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 class Config:
+    # Secret Key
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-this")
 
-    ADZUNA_APP_ID = os.getenv("ADZUNA_APP_ID", "")
-    ADZUNA_APP_KEY = os.getenv("ADZUNA_APP_KEY", "")
+    # Adzuna API Credentials
+    ADZUNA_APP_ID = os.getenv("ADZUNA_APP_ID")
+    ADZUNA_APP_KEY = os.getenv("ADZUNA_APP_KEY")
 
+    # Database Configuration
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 
     if not SQLALCHEMY_DATABASE_URI:
@@ -17,4 +22,7 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-print("DEBUG: Config SQLALCHEMY_DATABASE_URI =", Config.SQLALCHEMY_DATABASE_URI)
+
+# Debug (Optional – remove later)
+print("DEBUG: APP_ID =", Config.ADZUNA_APP_ID)
+print("DEBUG: DATABASE =", Config.SQLALCHEMY_DATABASE_URI)
