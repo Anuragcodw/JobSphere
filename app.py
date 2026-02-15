@@ -6,19 +6,7 @@ import os
 app = create_app()
 app.register_blueprint(admin_bp)
 
-# 🔥 TEMPORARY DB RESET (STEP-1 FIX)
-# ⚠️ Deploy ke baad REMOVE karna hai
-with app.app_context():
-    try:
-        from app.extensions import db
-        from app.models.user import User
 
-        User.query.delete()
-        db.session.commit()
-        print("✅ User table cleared successfully")
-
-    except Exception as e:
-        print("❌ DB reset skipped:", e)
 
 # 🔥 run app
 if __name__ == "__main__":
